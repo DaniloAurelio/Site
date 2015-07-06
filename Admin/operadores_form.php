@@ -2,10 +2,8 @@
 require_once("sessao.php");
 require_once("../config/database.php");
 require_once("header.html");
-$id=$_REQUEST[id];
-$login=$_POST['login'];
-$email=$_POST['email'];
-$senha=$_POST['senha'];
+
+
 
 $acao=$_POST['acao'];
 if(isset($_POST['nivel'])){
@@ -15,10 +13,14 @@ foreach($_POST["nivel"] as $nivel){
 }
 
 if($acao=='I'){
-
+		$id=$_REQUEST[id];
+		$login=$_POST['login'];
+		$email=$_POST['email'];
+		$senha=$_POST['senha'];
 try{
-	$senha = crypt(sha1(md5($senha)), 'qwerty');
-	$sql=" Insert into tb_operadores set login = :login,senha= :senha, email= :email , nivel= :nivel";
+	#$senha = crypt(sha1(md5($senha)), 'qwerty');
+	$senha = password_hash($senha, PASSWORD_DEFAULT);
+	$sql="Insert into tb_operadores set login = :login,senha= :senha, email= :email , nivel= :nivel";
 	$stmt = $conexao->prepare($sql) or die ("Erro");
 	$stmt->bindParam('login', $login, PDO::PARAM_STR);
 	$stmt->bindParam('email', $email);
@@ -33,12 +35,17 @@ try{
     <script language= "JavaScript">
     location.href="operadores.php";
     </script>
-<?
+<?php
 
 }else if($acao=='U'){
 		
 	try{
-		$senha = crypt(sha1(md5($senha)), 'qwerty');
+		$id=$_REQUEST[id];
+		$login=$_POST['login'];
+		$email=$_POST['email'];
+		$senha=$_POST['senha'];
+		$senha = password_hash($senha, PASSWORD_DEFAULT);
+		#$senha = crypt(sha1(md5($senha)), 'qwerty');
 	$sql=" UPDATE tb_operadores set login = :login,senha= :senha, email= :email , nivel= :nivel where id= :id" ;
 	$stmt = $conexao->prepare($sql) or die ("Erro");
 	$stmt->bindParam('login', $login, PDO::PARAM_STR);
@@ -56,7 +63,7 @@ try{
     <script language= "JavaScript">
     location.href="operadores.php";
     </script>
-<?
+<?php
 		
 }else if(isset($id)){
 		$sql="Select * from tb_operadores where id= :id";
