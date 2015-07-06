@@ -8,30 +8,39 @@ require_once("../config/database.php");
 $login= $_POST['login'];
 $senha= $_POST['senha'];
 
+#$senha = crypt(sha1(md5($senha)), 'qwerty');
 
-$senha = crypt(sha1(md5($senha)), 'qwerty');
-
-$sql = "select * from tb_operadores where login= :login and senha= :senha";
+$sql = "select * from tb_operadores where login= :login";
 $stmt=$conexao->prepare($sql);
 $stmt->bindParam('login',$login);
-$stmt->bindParam('senha',$senha);
 $stmt->execute();
-
 $count=$stmt->rowCount();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+#echo $row['senha'];
 
 if($count >0){
-		$_SESSION['logado']=1;
+		
+			if(password_verify($senha, $row['senha']))
+        {
+		       $_SESSION['logado']=1;
 		$_SESSION['usuario']=$login;
 		?>
 		 <script language= "JavaScript">	 location.href="index.php";    </script>
-		<?
+		<?php
+		}else{
+				$_SESSION['logado']=0;
+	?>
+		 <script language= "JavaScript">	alert ('Usuário ou senha inválidos'); location.href="login.php";    </script>
+		<?php	
+			}
+	
 	}else{
 		$_SESSION['logado']=0;
 	?>
 		 <script language= "JavaScript">	alert ('Usuário ou senha inválidos'); location.href="login.php";    </script>
-		<?
-			
-		}	
+		<?php
+	}
 
 }
 
@@ -369,8 +378,8 @@ if($count >0){
           <form class="form-signin" id="formlogin" role="form"  method="post" action="login.php">
             <h3 class="form-signin-heading">Insira seu Login</h3>
            
-            <input type="text" class="form-control" name="login" id="login" placeholder="Seu Login" required autofocus>
-            <input type="password" class="form-control" name="senha" id="senha" placeholder="Sua Senha" required>
+            <input type="text" class="form-control" name="login" id="login" placeholder="Login" required autofocus>
+            <input type="password" class="form-control" name="senha" id="senha" placeholder="Senha" required>
             <a href="#" id="flipToRecover" class="flipLink">
              Esqueci minha senha
             </a>
@@ -382,7 +391,7 @@ if($count >0){
             <a href="#" id="flipToLogin" class="flipLink">
               <div id="triangle-topleft"></div>
             </a>
-            <input type="email" class="form-control" name="loginEmail" id="loginEmail" placeholder="Seu Email" required autofocus>
+            <input type="email" class="form-control" name="loginEmail" id="loginEmail" placeholder="Email" required autofocus>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Recuperar senha</button>
           </form>
 
