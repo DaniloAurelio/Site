@@ -1,7 +1,9 @@
 <?php
-require("./config/database.php");
 
-
+$conexao = new \PDO('mysql:host=localhost;', 'root', '');
+$conexao->exec('DROP SCHEMA IF EXISTS ciasoftware');
+$conexao->exec('CREATE SCHEMA ciasoftware');
+$conexao->exec('USE ciasoftware');
 
 $sql="DROP TABLE IF EXISTS `tb_paginas`;
 CREATE TABLE `tb_paginas` (
@@ -51,7 +53,7 @@ INSERT INTO `tb_home` VALUES ('6', 'assessoria', 'Assessoria', 0x446F6E656320736
 
 
 
-$_sql ="DROP TABLE IF EXISTS `tb_operadores`;
+$sql =" DROP TABLE IF EXISTS `tb_operadores`;
 CREATE TABLE `tb_operadores` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `login` varchar(50) DEFAULT NULL,
@@ -59,15 +61,13 @@ CREATE TABLE `tb_operadores` (
   `email` varchar(100) DEFAULT NULL,
   `nivel` int(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;";
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;";
  $stmt=$conexao->prepare($sql);
-    $stmt->execute();
+ $stmt->execute();
 
 
-$_sql="
-		INSERT INTO `tb_operadores` VALUES ('15', 'danilo', 'qwGxKxHIBEEfo', 'danilo@hotmail.com', '1');
-		
-";
+$sql="		INSERT INTO `tb_operadores` VALUES ('18', 'danilo', '$2y$10$3NNoiziVE0VhP6OL35.WuepL8GIaPczyYhWBh.wRFhMHs8jFK875W', 'danilo@hotmail.com', '1');
+		";
 
 $stmt=$conexao->prepare($sql);
     $stmt->execute();
@@ -75,3 +75,4 @@ $stmt=$conexao->prepare($sql);
 	echo "LOGIIN PADRÃO: DANILO SENHA PADRÃO: DANILO </BR>";
 
 
+?>
